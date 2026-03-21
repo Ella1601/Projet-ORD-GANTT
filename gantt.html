@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Diagramme de Gantt</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>Ordonnancement des tâches - Diagramme de Gantt</h1>
+
+<!-- FORMULAIRE D'AJOUT -->
+<div class="form-section">
+    <input id="name" placeholder="Tâche (A)">
+    <input id="duration" type="number" placeholder="Durée">
+    <input id="deps" placeholder="Dépendances (A,B)">
+    <button onclick="addTask()">Ajouter</button>
+    <button onclick="calculate()">Générer le diagramme</button>
+    <button onclick="resetData()">Réinitialiser</button>  
+</div>
+
+<!-- TABLEAU DES TÂCHES AJOUTÉES -->
+<h2>Liste des tâches</h2>
+<div class="table-wrapper">
+    <table id="taskList"></table>
+</div>
+
+<!-- DIAGRAMME -->
+<h2>Diagramme de Gantt</h2>
+<div id="gantt"></div>
+
+<a href="gantt_successeur.html">
+    <button>Voir avec Successeurs</button>
+</a>
+
+<script src="script.js"></script>
+
+</body>
+</html>
