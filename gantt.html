@@ -15,7 +15,7 @@
     <input id="duration" type="number" placeholder="Durée">
     <input id="deps" placeholder="Dépendances (A,B)">
     <button onclick="addTask()">Ajouter</button>
-    <button onclick="calculate()">Générer le diagramme</button>
+    <button onclick="generateGantt()">Générer le diagramme</button>
     <button onclick="resetData()">Réinitialiser</button>  
 </div>
 
@@ -25,13 +25,43 @@
     <table id="taskList"></table>
 </div>
 
+<h3>Tableau complet</h3>
+
+<div class="table-wrapper">
+    <table id="result">
+        <thead>
+            <tr>
+                <th>Tâche</th>
+                <th>Durée</th>
+                <th>Début</th>
+                <th>Fin</th>
+                <th>Tâches Successeurs</th>
+                <th>MT</th>
+                <th>ML</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
 <!-- DIAGRAMME -->
 <h2>Diagramme de Gantt</h2>
+<h3>Options d'affichage</h3>
+<div class="options">
+    <label>
+        <input type="checkbox" id="showLate" onchange="drawGantt()"> Dates au plus tard
+    </label>
+
+    <label>
+        <input type="checkbox" id="showFree" onchange="drawGantt()"> Marges libres
+    </label>
+
+    <label>
+        <input type="checkbox" id="showCritical" onchange="drawGantt()"> Chemin critique
+    </label>
+</div>
 <div id="gantt"></div>
 
-<a href="gantt_successeur.html">
-    <button>Voir avec Successeurs</button>
-</a>
 
 <script src="script.js"></script>
 
