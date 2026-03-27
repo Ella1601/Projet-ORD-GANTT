@@ -1,39 +1,61 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Diagramme de Gantt</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h1>Ordonnancement des tâches - Diagramme de Gantt</h1>
 
-<h1>Ordonnancement des tâches - Diagramme de Gantt</h1>
+    <!-- FORMULAIRE D'AJOUT -->
+    <div class="form-section">
+      <div class="form-group">
+        <label for="name">Nom de la tâche </label>
+        <input id="name" placeholder="Tâche (A)" />
+      </div>
+      <div class="form-group">
+        <label for="duration">Durée </label>
+        <input id="duration" type="number" placeholder="Durée" />
+      </div>
+      <div class="form-group">
+        <label for="deps">Dépendances </label>
+        <input id="deps" placeholder="Dépendances (A,B)" />
+      </div>
+      <button id="addTaskBtn" onclick="addTask()">Ajouter</button>
+    </div>
 
-<!-- FORMULAIRE D'AJOUT -->
-<div class="form-section">
-    <input id="name" placeholder="Tâche (A)">
-    <input id="duration" type="number" placeholder="Durée">
-    <input id="deps" placeholder="Dépendances (A,B)">
-    <button onclick="addTask()">Ajouter</button>
+    <!-- TABLEAU DES TÂCHES AJOUTÉES -->
+    <h2>Liste des tâches</h2>
+    <div class="table-wrapper">
+      <table id="taskList"></table>
+    </div>
+
+    <h3>Tableau complet</h3>
+
+    <div class="table-wrapper">
+      <table id="result">
+        <thead>
+          <tr>
+            <th>Tâche</th>
+            <th>Durée</th>
+            <th>Début</th>
+            <th>Fin</th>
+            <th>Tâches Successeurs</th>
+            <th>MT</th>
+            <th>ML</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <!-- DIAGRAMME -->
+    <h2>Diagramme de Gantt</h2>
     <button onclick="calculate()">Générer le diagramme</button>
-    <button onclick="resetData()">Réinitialiser</button>  
-</div>
+    <button onclick="resetData()">Réinitialiser</button>
+    <div id="gantt"></div>
 
-<!-- TABLEAU DES TÂCHES AJOUTÉES -->
-<h2>Liste des tâches</h2>
-<div class="table-wrapper">
-    <table id="taskList"></table>
-</div>
-
-<!-- DIAGRAMME -->
-<h2>Diagramme de Gantt</h2>
-<div id="gantt"></div>
-
-<a href="gantt_successeur.html">
-    <button>Voir avec Successeurs</button>
-</a>
-
-<script src="script.js"></script>
-
-</body>
+    <script src="script.js"></script>
+  </body>
 </html>
