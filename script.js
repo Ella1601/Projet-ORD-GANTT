@@ -603,7 +603,7 @@ function calculate() {
             task.dependencies.forEach(dep => {
                 const depTask = map[dep];
                 if (!depTask) {
-                    alert(`Dépendance inconnue : ${dep} pour la tâche ${task.name}`);
+                    alert("Dépendance inconnue : " + dep + " pour la tâche " + task.name);
                     return;
                 }
                 calcEarly(depTask);
