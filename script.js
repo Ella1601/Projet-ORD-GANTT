@@ -403,6 +403,175 @@ function displayResult() {
 }
 
 // ------------------------------------------------------------------
+//  Dessin du diagramme de Gantt (version enrichie avec deux barres)
+// ------------------------------------------------------------------
+function drawGantt() {
+    const container = document.getElementById('gantt');
+    if (!container) return;
+    container.innerHTML = '';
+
+    if (tasks.some(t => t.start === null)) {
+        container.innerHTML = "<p>Veuillez d'abord cliquer sur \"Calculer\".</p>";
+        return;
+    }
+
+    const projectDuration = Math.max(...tasks.map(t => t.end));
+    const labelWidth = 120;
+    const maxWidth = 900;
+    const minScale = 25;
+    const availableWidth = Math.min(container.clientWidth || maxWidth, maxWidth) - labelWidth;
+    let scale = Math.floor(availableWidth / projectDuration);
+    if (scale < minScale) scale = minScale;
+    if (scale > 60) scale = 60;
+
+    const totalWidth = projectDuration * scale;
+
+    // Légende
+    const legend = document.createElement('div');
+    legend.style.cssText = 'display:flex;gap:18px;align-items:center;margin-bottom:8px;font-size:13px;flex-wrap:wrap;';
+    legend.innerHTML = `
+        <span style="display:flex;align-items:center;gap:5px;">
+            <span style="display:inline-block;width:28px;height:14px;background:#ff4444;border-radius:3px;"></span> Chemin critique
+        </span>
+        <span style="display:flex;align-items:center;gap:5px;">
+            <span style="display:inline-block;width:28px;height:14px;background:#4caf50;border-radius:3px;"></span> Dates au plus tôt
+        </span>
+        <span style="display:flex;align-items:center;gap:5px;">
+            <span style="display:inline-block;width:28px;height:14px;background:#1565c0;border-radius:3px;opacity:0.7;"></span> Dates au plus tard
+        </span>
+        <span style="display:flex;align-items:center;gap:5px;">
+            <span style="display:inline-block;width:28px;height:14px;background:#ffc107;border-radius:3px;"></span> Marge libre
+        </span>
+    `;
+    container.appendChild(legend);
+
+    const ganttTable = document.createElement('div');
+    ganttTable.className = 'gantt-table';
+    container.appendChild(ganttTable);
+
+    // En-tête
+    const headerRow = document.createElement('div');
+    headerRow.className = 'gantt-header';
+    ganttTable.appendChild(headerRow);
+
+    const labelCol = document.createElement('div');
+    labelCol.className = 'gantt-label-cell';
+    labelCol.style.minWidth = labelWidth + 'px';
+    headerRow.appendChild(labelCol);
+
+    const timeScale = document.createElement('div');
+    timeScale.className = 'gantt-time-scale';
+    timeScale.style.width = totalWidth + 'px';
+    headerRow.appendChild(timeScale);
+
+    const timeMarkInterval = scale >= 40 ? 1 : (scale >= 25 ? 2 : 5);
+    for (let t = 0; t <= projectDuration; t += timeMarkInterval) {
+        const mark = document.createElement('div');
+        mark.className = 'gantt-time-mark';
+        mark.style.left = (t * scale) + 'px';
+        mark.innerText = t;
+        timeScale.appendChild(mark);
+    }
+
+    // Lignes des tâches
+    tasks.forEach(task => {
+        const isCritical = task.mt === 0;
+
+        const taskRow = document.createElement('div');
+        taskRow.className = 'gantt-row';
+        ganttTable.appendChild(taskRow);
+
+        const taskLabel = document.createElement('div');
+        taskLabel.className = 'gantt-label-cell';
+        taskLabel.style.minWidth = labelWidth + 'px';
+        taskLabel.innerText = task.name;
+        taskRow.appendChild(taskLabel);
+
+        const barContainer = document.createElement('div');
+        barContainer.className = 'gantt-bar-container';
+        barContainer.style.width = totalWidth + 'px';
+        barContainer.style.flexShrink = '0';
+        barContainer.style.position = 'relative';
+        barContainer.style.height = '100px'; // 👈 plus grand pour espacement
+        barContainer.style.backgroundImage = `repeating-linear-gradient(90deg,#e8e8e8,#e8e8e8 1px,transparent 1px,transparent ${scale}px)`;
+        taskRow.appendChild(barContainer);
+
+        // 🔵 Barre "au plus tard" (haut)
+        if (showLate) {
+        const lateBar = document.createElement('div');
+        lateBar.style.cssText = `
+            position:absolute;
+            top:5px;
+            left:${task.lateStart * scale}px;
+            width:${task.duration * scale}px;
+            height:24px;
+            background:#1565c0;
+            opacity:0.75;
+            color:white;
+            font-size:11px;
+            font-weight:bold;
+            line-height:24px;
+            text-align:center;
+            border-radius:4px;
+            overflow:hidden;
+        `;
+        lateBar.innerText = `${task.name} (${task.lateStart}→${task.lateEnd})`;
+        barContainer.appendChild(lateBar);
+        }
+
+        // 🟡 Marge libre (milieu)
+        if (showFree && task.ml !== undefined && task.ml !== null) {
+            let barLeft, barWidth, title;
+
+            if (task.ml > 0) {
+                barLeft = task.end * scale;
+                barWidth = task.ml * scale;
+                title = `Marge libre : ${task.ml}`;
+            } else {
+                barLeft = task.start * scale;
+                barWidth = task.duration * scale;
+                title = `Marge libre nulle`;
+            }
+
+            const freeBar = document.createElement('div');
+            freeBar.style.cssText = `
+                position:absolute;
+                top:40px;
+                left:${barLeft}px;
+                width:${barWidth}px;
+                height:14px;
+                background:#ffc107;
+                border-radius:3px;
+            `;
+            freeBar.title = title;
+            barContainer.appendChild(freeBar);
+        }
+
+        // 🟢 / 🔴 Barre "au plus tôt" (bas)
+        const earlyBar = document.createElement('div');
+        const earlyBg = isCritical ? '#ff4444' : '#4caf50';
+
+        earlyBar.style.cssText = `
+            position:absolute;
+            top:70px;
+            left:${task.start * scale}px;
+            width:${task.duration * scale}px;
+            height:24px;
+            background:${earlyBg};
+            color:white;
+            font-size:11px;
+            font-weight:bold;
+            line-height:24px;
+            text-align:center;
+            border-radius:4px;
+            overflow:hidden;
+        `;
+        earlyBar.innerText = `${task.name} (${task.start}→${task.end})`;
+        barContainer.appendChild(earlyBar);
+    });
+}
+
+// ------------------------------------------------------------------
 //  Calcul principal (dates au plus tôt, au plus tard, marges)
 // ------------------------------------------------------------------
 function calculate() {
@@ -468,6 +637,20 @@ function calculate() {
 
     tasks.forEach(t => calcLate(t));
 
+    // Calcul des successeurs
+    tasks.forEach(t => {
+        t.successors = [];
+    });
+
+    tasks.forEach(t => {
+        t.dependencies.forEach(dep => {
+            const depTask = tasks.find(x => x.name === dep);
+            if (depTask) {
+                depTask.successors.push(t.name);
+            }
+        });
+    });
+
     // Marges
     tasks.forEach(t => {
         t.mt = t.lateStart - t.start;
@@ -486,171 +669,11 @@ function calculate() {
 }
 
 
-// ------------------------------------------------------------------
-//  Dessin du diagramme de Gantt (version enrichie avec deux barres)
-// ------------------------------------------------------------------
-function drawGantt() {
-    const container = document.getElementById('gantt');
-    if (!container) return;
-    container.innerHTML = '';
-
-    if (tasks.some(t => t.start === null)) {
-        container.innerHTML = "<p>Veuillez d'abord cliquer sur \"Calculer\".</p>";
-        return;
-    }
-
-    const projectDuration = Math.max(...tasks.map(t => t.end));
-    const labelWidth = 120;
-    const maxWidth = 900;
-    const minScale = 25;
-    const availableWidth = Math.min(container.clientWidth || maxWidth, maxWidth) - labelWidth;
-    let scale = Math.floor(availableWidth / projectDuration);
-    if (scale < minScale) scale = minScale;
-    if (scale > 60) scale = 60;
-
-    const totalWidth = projectDuration * scale;
-
-    // Légende
-    const legend = document.createElement('div');
-    legend.style.cssText = 'display:flex;gap:18px;align-items:center;margin-bottom:8px;font-size:13px;flex-wrap:wrap;';
-    legend.innerHTML = `
-        <span style="display:flex;align-items:center;gap:5px;">
-            <span style="display:inline-block;width:28px;height:14px;background:#4caf50;border-radius:3px;"></span> Dates au plus tôt
-        </span>
-        <span style="display:flex;align-items:center;gap:5px;">
-            <span style="display:inline-block;width:28px;height:14px;background:#1565c0;border-radius:3px;opacity:0.7;"></span> Dates au plus tard
-        </span>
-        <span style="display:flex;align-items:center;gap:5px;">
-            <span style="display:inline-block;width:28px;height:14px;background:#ff4444;border-radius:3px;"></span> Chemin critique
-        </span>
-    `;
-    container.appendChild(legend);
-
-    const ganttTable = document.createElement('div');
-    ganttTable.className = 'gantt-table';
-    container.appendChild(ganttTable);
-
-    // En-tête avec échelle temporelle
-    const headerRow = document.createElement('div');
-    headerRow.className = 'gantt-header';
-    ganttTable.appendChild(headerRow);
-
-    const labelCol = document.createElement('div');
-    labelCol.className = 'gantt-label-cell';
-    labelCol.style.minWidth = labelWidth + 'px';
-    headerRow.appendChild(labelCol);
-
-    const timeScale = document.createElement('div');
-    timeScale.className = 'gantt-time-scale';
-    timeScale.style.width = totalWidth + 'px';
-    headerRow.appendChild(timeScale);
-
-    const timeMarkInterval = scale >= 40 ? 1 : (scale >= 25 ? 2 : 5);
-    for (let t = 0; t <= projectDuration; t += timeMarkInterval) {
-        const mark = document.createElement('div');
-        mark.className = 'gantt-time-mark';
-        mark.style.left = (t * scale) + 'px';
-        mark.innerText = t;
-        timeScale.appendChild(mark);
-    }
-
-    // Lignes des tâches
-    tasks.forEach(task => {
-        const isCritical = task.mt === 0;
-
-        const taskRow = document.createElement('div');
-        taskRow.className = 'gantt-row';
-        ganttTable.appendChild(taskRow);
-
-        const taskLabel = document.createElement('div');
-        taskLabel.className = 'gantt-label-cell';
-        taskLabel.style.minWidth = labelWidth + 'px';
-        taskLabel.innerText = task.name;
-        taskRow.appendChild(taskLabel);
-
-        const barContainer = document.createElement('div');
-        barContainer.className = 'gantt-bar-container';
-        barContainer.style.width = totalWidth + 'px';
-        barContainer.style.flexShrink = '0';
-        barContainer.style.position = 'relative';
-        barContainer.style.height = '70px';
-        barContainer.style.backgroundImage = `repeating-linear-gradient(90deg,#e8e8e8,#e8e8e8 1px,transparent 1px,transparent ${scale}px)`;
-        taskRow.appendChild(barContainer);
-
-        // Barre "au plus tard" (en haut)
-        const lateBar = document.createElement('div');
-        lateBar.style.cssText = `
-            position:absolute;
-            top:6px;
-            left:${task.lateStart * scale}px;
-            width:${task.duration * scale}px;
-            height:26px;
-            background:#1565c0;
-            opacity:0.72;
-            color:white;
-            font-size:11px;
-            font-weight:bold;
-            line-height:26px;
-            text-align:center;
-            border-radius:4px;
-            overflow:hidden;
-            white-space:nowrap;
-            text-overflow:ellipsis;
-            padding:0 4px;
-            box-sizing:border-box;
-            z-index:1;
-        `;
-        lateBar.title = `${task.name} — Au plus tard : [${task.lateStart} → ${task.lateEnd}]`;
-        lateBar.innerText = `${task.name} (${task.lateStart}→${task.lateEnd})`;
-        barContainer.appendChild(lateBar);
-
-        // Barre "au plus tôt" (en bas)
-        const earlyBar = document.createElement('div');
-        const earlyBg = isCritical ? '#ff4444' : '#4caf50';
-        earlyBar.style.cssText = `
-            position:absolute;
-            bottom:6px;
-            left:${task.start * scale}px;
-            width:${task.duration * scale}px;
-            height:26px;
-            background:${earlyBg};
-            color:white;
-            font-size:11px;
-            font-weight:bold;
-            line-height:26px;
-            text-align:center;
-            border-radius:4px;
-            overflow:hidden;
-            white-space:nowrap;
-            text-overflow:ellipsis;
-            padding:0 4px;
-            box-sizing:border-box;
-            z-index:2;
-        `;
-        earlyBar.title = `${task.name} — Au plus tôt : [${task.start} → ${task.end}]`;
-        earlyBar.innerText = `${task.name} (${task.start}→${task.end})`;
-        barContainer.appendChild(earlyBar);
-
-        // Barre de marge libre (au milieu)
-        if (task.ml && task.ml > 0) {
-            const freeBar = document.createElement('div');
-            freeBar.style.cssText = `
-                position:absolute;
-                top:50%;
-                transform:translateY(-50%);
-                left:${task.end * scale}px;
-                width:${task.ml * scale}px;
-                height:18px;
-                background:#ffc107;
-                border-radius:3px;
-                opacity:0.9;
-                z-index:0;
-            `;
-            freeBar.title = `${task.name} — Marge libre : ${task.ml}`;
-            barContainer.appendChild(freeBar);
-        }
-    });
+function generateGantt() {
+    calculate();   // calcule les dates
+    drawGantt();   // affiche selon les checkbox
 }
+
 
 // ------------------------------------------------------------------
 //  Réinitialisation des données

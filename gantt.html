@@ -52,10 +52,36 @@
 
     <!-- DIAGRAMME -->
     <h2>Diagramme de Gantt</h2>
-    <button onclick="calculate()">Générer le diagramme</button>
+    <button onclick="generateGantt()">Générer le diagramme</button>
     <button onclick="resetData()">Réinitialiser</button>
+    <h3>Options d'affichage</h3>
+    <div class="options">
+      <label>
+        <input type="checkbox" id="showLate" onchange="drawGantt()" /> Dates au
+        plus tard
+      </label>
+
+      <label>
+        <input type="checkbox" id="showFree" onchange="drawGantt()" /> Marges
+        libres
+      </label>
+
+      <label>
+        <input type="checkbox" id="showCritical" onchange="drawGantt()" />
+        Chemin critique
+      </label>
+    </div>
     <div id="gantt"></div>
 
     <script src="script.js"></script>
+    <!-- FORMULAIRE D'AJOUT -->
+    <!-- <div class="form-section">
+    <input id="name" placeholder="Tâche (A)">
+    <input id="duration" type="number" placeholder="Durée">
+    <input id="deps" placeholder="Dépendances (A,B)">
+    <button onclick="addTask()">Ajouter</button>
+    <button onclick="generateGantt()">Générer le diagramme</button>
+    <button onclick="resetData()">Réinitialiser</button>  
+</div> -->
   </body>
 </html>
