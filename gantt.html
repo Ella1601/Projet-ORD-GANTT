@@ -3,85 +3,272 @@
   <head>
     <meta charset="UTF-8" />
     <title>Diagramme de Gantt</title>
+    <link rel="stylesheet" href="output.css" />
     <link rel="stylesheet" href="style.css" />
   </head>
-  <body>
-    <h1>Ordonnancement des tâches - Diagramme de Gantt</h1>
-
-    <!-- FORMULAIRE D'AJOUT -->
-    <div class="form-section">
-      <div class="form-group">
-        <label for="name">Nom de la tâche </label>
-        <input id="name" placeholder="Tâche (A)" />
+  <body class="font-sans">
+    <div class="border-b py-6 pl-10 border-gray-200 bg-white">
+      <div class="flex items-center gap-4">
+        <div
+          class="flex items-center justify-center rounded-lg bg-blue-100 text-blue-600 p-2 w-fit h-fit"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="32"
+            height="32"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-chart-gantt"
+          >
+            <path d="M10 6h8" />
+            <path d="M12 16h6" />
+            <path d="M3 3v16a2 2 0 0 0 2 2h16" />
+            <path d="M8 11h7" />
+          </svg>
+        </div>
+        <div class="flex flex-col">
+          <h1 class="text-2xl font-bold text-brand">
+            Ordonnancement des tâches
+          </h1>
+          <p class="">Diagramme de Gantt</p>
+        </div>
       </div>
-      <div class="form-group">
-        <label for="duration">Durée </label>
-        <input id="duration" type="number" placeholder="Durée" />
+    </div>
+
+    <div class="mx-10 my-6 flex flex-col gap-6">
+      <div
+        class="flex items-center justify-between p-6 rounded-lg bg-white border border-gray-300 text-base font-medium text-text-default w-full"
+      >
+        <div class="flex gap-4">
+          <div class="flex flex-col">
+            <label for="name" class="mb-2">Nom de la tâche</label>
+            <input
+              id="name"
+              placeholder="Tâche (A)"
+              class="border border-gray-300 rounded-md p-2 focus:outline-none focus:border-focus-outline font-normal"
+            />
+          </div>
+          <div class="flex flex-col">
+            <label for="duration" class="mb-2">Durée</label>
+            <input
+              id="duration"
+              type="number"
+              placeholder="Durée"
+              class="border border-gray-300 rounded-md p-2 focus:outline-none focus:border-focus-outline font-normal items-center"
+            />
+          </div>
+          <div class="flex flex-col">
+            <label for="deps" class="mb-2">Dépendances</label>
+            <input
+              id="deps"
+              placeholder="Dépendances (A,B)"
+              class="border border-gray-300 rounded-md p-2 focus:outline-none focus:border-focus-outline font-normal"
+            />
+          </div>
+        </div>
+        <div
+          class="flex gap-1 items-center bg-brand-light text-brand font-semibold px-4 py-2 rounded-md cursor-pointer border-none hover:bg-brand-border transition-colors mt-8"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-plus-icon lucide-plus"
+          >
+            <path d="M5 12h14" />
+            <path d="M12 5v14" />
+          </svg>
+          <button id="addTaskBtn" onclick="addTask()">Ajouter tâche</button>
+        </div>
       </div>
-      <div class="form-group">
-        <label for="deps">Dépendances </label>
-        <input id="deps" placeholder="Dépendances (A,B)" />
+
+      <div class="bg-white p-6 rounded-lg border border-gray-300">
+        <h2 class="text-lg font-semibold text-brand mb-4">Liste des tâches</h2>
+
+        <div class="relative flex items-center">
+          <button
+            id="carouselPrev"
+            onclick="carouselMove(-1)"
+            class="hidden absolute left-0 z-10 -translate-x-1/2 w-9 h-9 rounded-full bg-red-800 shadow-md border flex items-center justify-center hover:bg-gray-50 disabled:opacity-30"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-5 h-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 18l-6-6 6-6"
+              />
+            </svg>
+          </button>
+
+          <div class="overflow-hidden w-full">
+            <div
+              id="taskCarousel"
+              class="flex gap-4 transition-transform duration-300 ease-in-out m-2"
+            ></div>
+          </div>
+
+          <button
+            id="carouselNext"
+            onclick="carouselMove(1)"
+            class="hidden absolute right-0 z-10 translate-x-1/2 w-9 h-9 rounded-full bg-red-800 shadow-md border flex items-center justify-center hover:bg-gray-50 disabled:opacity-30"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-5 h-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 6l6 6-6 6"
+              />
+            </svg>
+          </button>
+        </div>
+
+        <p id="carouselEmpty" class="text-sm text-gray-400 hidden mt-2">
+          Aucune tâche ajoutée.
+        </p>
       </div>
-      <button id="addTaskBtn" onclick="addTask()">Ajouter</button>
+
+      <div class="bg-white border border-gray-300 rounded-lg p-6">
+        <h3 class="text-lg font-semibold text-brand mt-2 mb-2">
+          Tableau complet
+        </h3>
+        <div class="overflow-x-auto my-4">
+          <table id="result" class="border-collapse w-full min-w-150">
+            <thead>
+              <tr>
+                <th
+                  class="border border-gray-300 px-3 py-2 text-center bg-gray-100"
+                >
+                  Tâche
+                </th>
+                <th
+                  class="border border-gray-300 px-3 py-2 text-center bg-gray-100"
+                >
+                  Durée
+                </th>
+                <th
+                  class="border border-gray-300 px-3 py-2 text-center bg-gray-100"
+                >
+                  Début
+                </th>
+                <th
+                  class="border border-gray-300 px-3 py-2 text-center bg-gray-100"
+                >
+                  Fin
+                </th>
+                <th
+                  class="border border-gray-300 px-3 py-2 text-center bg-gray-100"
+                >
+                  Tâches Successeurs
+                </th>
+                <th
+                  class="border border-gray-300 px-3 py-2 text-center bg-gray-100"
+                >
+                  MT
+                </th>
+                <th
+                  class="border border-gray-300 px-3 py-2 text-center bg-gray-100"
+                >
+                  ML
+                </th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- DIAGRAMME -->
+      <div>
+        <h2 class="text-lg font-semibold text-gray-700 mt-8 mb-3">
+          Diagramme de Gantt
+        </h2>
+
+        <div class="flex gap-3 flex-wrap mb-4">
+          <button
+            onclick="generateGantt()"
+            class="bg-brand text-white text-sm font-semibold px-4 py-2 rounded cursor-pointer border-none hover:bg-[#7a1221] transition-colors"
+          >
+            Générer le diagramme
+          </button>
+          <button
+            onclick="resetData()"
+            class="bg-gray-200 text-gray-700 text-sm font-semibold px-4 py-2 rounded cursor-pointer border-none hover:bg-gray-300 transition-colors"
+          >
+            Réinitialiser
+          </button>
+        </div>
+
+        <!-- OPTIONS CHECKBOXES -->
+        <h3 class="text-sm font-semibold text-gray-600 mb-2">
+          Options d'affichage
+        </h3>
+        <div class="flex gap-6 flex-wrap mb-4">
+          <label
+            class="flex items-center gap-2 text-sm cursor-pointer select-none"
+          >
+            <input
+              type="checkbox"
+              id="showLate"
+              onchange="drawGantt()"
+              class="accent-[#1565c0] w-4 h-4 cursor-pointer"
+            />
+            <span>Dates au plus tard</span>
+          </label>
+          <label
+            class="flex items-center gap-2 text-sm cursor-pointer select-none"
+          >
+            <input
+              type="checkbox"
+              id="showFree"
+              onchange="drawGantt()"
+              class="accent-[#ffc107] w-4 h-4 cursor-pointer"
+            />
+            <span>Marges libres</span>
+          </label>
+          <label
+            class="flex items-center gap-2 text-sm cursor-pointer select-none"
+          >
+            <input
+              type="checkbox"
+              id="showCritical"
+              onchange="drawGantt()"
+              class="accent-[#ff4444] w-4 h-4 cursor-pointer"
+            />
+            <span>Chemin critique</span>
+          </label>
+        </div>
+
+        <!-- ZONE GANTT -->
+        <div
+          id="gantt"
+          class="relative bg-gray-50 border border-gray-300 min-h-50 mt-4 p-3 overflow-x-auto rounded"
+        ></div>
+      </div>
     </div>
-
-    <!-- TABLEAU DES TÂCHES AJOUTÉES -->
-    <h2>Liste des tâches</h2>
-    <div class="table-wrapper">
-      <table id="taskList"></table>
-    </div>
-
-    <h3>Tableau complet</h3>
-
-    <div class="table-wrapper">
-      <table id="result">
-        <thead>
-          <tr>
-            <th>Tâche</th>
-            <th>Durée</th>
-            <th>Début</th>
-            <th>Fin</th>
-            <th>Tâches Successeurs</th>
-            <th>MT</th>
-            <th>ML</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-
-    <!-- DIAGRAMME -->
-    <h2>Diagramme de Gantt</h2>
-    <button onclick="generateGantt()">Générer le diagramme</button>
-    <button onclick="resetData()">Réinitialiser</button>
-    <h3>Options d'affichage</h3>
-    <div class="options">
-      <label>
-        <input type="checkbox" id="showLate" onchange="drawGantt()" /> Dates au
-        plus tard
-      </label>
-
-      <label>
-        <input type="checkbox" id="showFree" onchange="drawGantt()" /> Marges
-        libres
-      </label>
-
-      <label>
-        <input type="checkbox" id="showCritical" onchange="drawGantt()" />
-        Chemin critique
-      </label>
-    </div>
-    <div id="gantt"></div>
-
     <script src="script.js"></script>
-    <!-- FORMULAIRE D'AJOUT -->
-    <!-- <div class="form-section">
-    <input id="name" placeholder="Tâche (A)">
-    <input id="duration" type="number" placeholder="Durée">
-    <input id="deps" placeholder="Dépendances (A,B)">
-    <button onclick="addTask()">Ajouter</button>
-    <button onclick="generateGantt()">Générer le diagramme</button>
-    <button onclick="resetData()">Réinitialiser</button>  
-</div> -->
   </body>
 </html>

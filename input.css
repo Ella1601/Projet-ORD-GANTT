@@ -1,0 +1,10 @@
+@import "tailwindcss";
+@source "gantt.html";
+
+@theme {
+  --color-brand: #9e182b;
+  --color-brand-light: #f2afbc;
+  --color-brand-border: #e698a4;
+  --color-text-default: #1f1f1f;
+  --color-focus-outline: #f2afbc;
+}

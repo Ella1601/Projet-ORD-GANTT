@@ -1,113 +1,185 @@
 body {
-  font-family: Arial, sans-serif;
-  margin: 40px;
-  background-color: #fbf8f6;
-}
-h1 {
-  color: #9e182b;
-}
-.form-section {
-  margin-bottom: 20px;
-  padding: 18px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  background-color: white;
-  border: 2px solid #e698a4;
+  background-color: #f6e6db;
 }
 
-.form-group {
+/* =========================
+   CARDS MODERNES
+========================= */
+
+.task-carousel {
+  display: flex;
+  gap: 16px;
+}
+
+.task-card {
+  width: 200px;
+  background: white;
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  border: 1px solid #eee;
+  transition: all 0.25s ease;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
-#addTaskBtn {
-  background-color: #f2afbc;
-  color: #9e182b;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 15px;
-  height: fit-content;
-  padding: 8px 12px;
-  margin-top: 20px;
+.task-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.12);
 }
 
-input,
-button {
-  margin: 5px;
-  padding: 5px;
+.task-card-name {
+  font-weight: 600;
+  font-size: 16px;
+  margin-bottom: 12px;
 }
 
-.table-wrapper {
-  overflow-x: auto; /* Défilement horizontal si nécessaire */
-  margin: 20px 0;
-}
-
-table {
-  border-collapse: collapse;
+.task-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 6px 0;
   width: 100%;
-  min-width: 600px; /* Force le défilement sur petit écran */
 }
 
-th,
-td {
+.task-row-bottom {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.task-row:last-child {
+  border-bottom: none;
+}
+
+.task-label {
+  color: #666;
+  font-size: 13px;
+}
+
+/* =========================
+   ACTIONS HOVER
+========================= */
+
+.row-actions {
+  opacity: 0;
+  transform: translateX(5px);
+  transition: all 0.2s ease;
+  display: flex;
+  gap: 8px;
+}
+
+.task-row:hover .row-actions {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.task-row:hover .row-actions {
+  opacity: 1;
+}
+
+.icon-btn {
+  background: #f5f5f5;
+  border: none;
+  border-radius: 6px;
+  padding: 4px 4px;
+  cursor: pointer;
+  /* font-size: px; */
+}
+
+.icon-btn:hover {
+  background: #e4e4e4;
+}
+
+.icon-btn-cancel {
+  background: #f5f5f5;
+  border: none;
+  border-radius: 6px;
+  padding: 4px 4px;
+  cursor: pointer;
+  /* font-size: px; */
+}
+
+.icon-btn-cancel:hover {
+  background: #e4e4e4;
+}
+
+.icon-btn-confirm {
+  background: #f5f5f5;
+  border: none;
+  border-radius: 6px;
+  padding: 4px 4px;
+  cursor: pointer;
+  /* font-size: px; */
+}
+
+.icon-btn-confirm:hover {
+  background: #e4e4e4;
+}
+
+/* =========================
+   MODE EDIT
+========================= */
+
+.edit-input {
+  width: 92%;
   border: 1px solid #ddd;
-  padding: 8px;
-  text-align: center;
+  border-radius: 6px;
+  padding: 4px 6px;
+  display: flex;
+  gap: 4px;
 }
 
-th {
-  background-color: #f2f2f2;
+.edit-btn {
+  display: flex;
+  gap: 4px;
 }
 
-#gantt {
-  position: relative;
-  background: #f9f9f9;
-  border: 1px solid #ccc;
-  min-height: 200px;
-  margin-top: 20px;
-  padding: 10px;
-  overflow-x: auto; /* Permet le défilement horizontal du diagramme */
+.edit-actions {
+  display: flex;
+  gap: 4px;
+  margin-right: 6px;
 }
 
-.bar {
-  position: relative;
-  height: 30px;
-  margin: 5px 0;
-  background-color: #4caf50;
+.confirm-btn {
+  color: #4caf50;
+  /* color: white; */
+}
+
+.cancel-btn {
+  background: #f44336;
   color: white;
-  text-align: center;
-  line-height: 30px;
-  border-radius: 4px;
-  font-size: 14px;
 }
 
-.critical {
-  background-color: #ff4444;
+/* =========================
+   DELETE BUTTON
+========================= */
+
+.task-delete {
+  margin-top: auto;
+  padding-top: 12px;
 }
 
-/* Tableau des tâches avec largeurs fixes */
-#taskList {
-  table-layout: fixed; /* Force le respect des largeurs définies */
-  width: auto; /* Permet au tableau de s'adapter mais les cellules gardent leur largeur fixe */
-  min-width: 0; /* Évite les débordements inutiles */
+.delete-btn {
+  width: 100%;
+  background: #ff5252;
+  color: white;
+  border: none;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
 }
 
-#taskList th,
-#taskList td {
-  width: 150px; /* Largeur fixe pour toutes les cellules (ajustez selon besoin) */
-  max-width: 150px;
-  min-width: 150px;
-  overflow: hidden; /* Cache le texte qui dépasse */
-  text-overflow: ellipsis; /* Ajoute des points de suspension */
-  white-space: nowrap; /* Empêche le retour à la ligne */
-  height: 50px; /* Hauteur fixe (optionnelle) */
-  vertical-align: middle; /* Centre verticalement */
-  box-sizing: border-box; /* Inclut le padding dans la largeur/hauteur */
+.delete-btn:hover {
+  background: #e53935;
 }
 
-/* Pour la première colonne (libellés Tâches, Durée, Dépendances) on peut garder la même largeur */
+/* =========================
+   GANTT EXISTANT (inchangé)
+========================= */
 
 .gantt-table {
   display: flex;
@@ -124,12 +196,15 @@ th {
 }
 
 .gantt-label-cell {
-  width: 120px; /* Largeur fixe pour la colonne des noms */
+  width: 120px;
   flex-shrink: 0;
   padding: 8px;
   font-weight: bold;
-  background-color: #f5f5f5;
+  background-color: #1f1f1f;
+  color: white;
   border-right: 1px solid #ddd;
+  display: flex;
+  align-items: center;
 }
 
 .gantt-time-scale {
@@ -146,36 +221,4 @@ th {
   font-size: 12px;
   color: #666;
   white-space: nowrap;
-}
-
-.gantt-bar-container {
-  position: relative;
-  height: 40px;
-  background: repeating-linear-gradient(
-    90deg,
-    #f0f0f0,
-    #f0f0f0 1px,
-    white 1px,
-    white 40px
-  );
-}
-
-.gantt-row .bar {
-  position: absolute;
-  top: 5px;
-  height: 30px;
-  background-color: #4caf50;
-  color: white;
-  text-align: center;
-  line-height: 30px;
-  border-radius: 4px;
-  font-size: 14px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  padding: 0 5px;
-}
-
-.gantt-row .bar.critical {
-  background-color: #ff4444;
 }
