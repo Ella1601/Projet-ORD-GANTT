@@ -151,10 +151,8 @@
         </p>
       </div>
 
-      <div class="bg-white border border-gray-300 rounded-lg p-6">
-        <h3 class="text-lg font-semibold text-brand mt-2 mb-2">
-          Tableau complet
-        </h3>
+      <!-- <div class="bg-white border border-gray-300 rounded-lg p-6">
+        <h3 class="text-lg font-semibold text-brand mb-2">Tableau complet</h3>
         <div class="overflow-x-auto my-4">
           <table id="result" class="border-collapse w-full min-w-150">
             <thead>
@@ -199,11 +197,30 @@
             <tbody></tbody>
           </table>
         </div>
+      </div> -->
+      <div class="bg-white border border-gray-300 rounded-lg p-6">
+        <h3 class="text-lg font-semibold text-brand mb-2">Tableau complet</h3>
+        <div class="overflow-x-auto my-4">
+          <table id="result" class="modern-table w-full min-w-150">
+            <thead>
+              <tr>
+                <th>Tâche</th>
+                <th>Durée</th>
+                <th>Début</th>
+                <th>Fin</th>
+                <th>Tâches Successeurs</th>
+                <th>MT</th>
+                <th>ML</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
       </div>
 
       <!-- DIAGRAMME -->
-      <div>
-        <h2 class="text-lg font-semibold text-gray-700 mt-8 mb-3">
+      <div class="bg-white p-6 rounded-lg border border-gray-300">
+        <h2 class="text-lg font-semibold text-gray-700 mb-3">
           Diagramme de Gantt
         </h2>
 
@@ -263,10 +280,7 @@
         </div>
 
         <!-- ZONE GANTT -->
-        <div
-          id="gantt"
-          class="relative bg-gray-50 border border-gray-300 min-h-50 mt-4 p-3 overflow-x-auto rounded"
-        ></div>
+        <div id="gantt"></div>
       </div>
     </div>
     <script src="script.js"></script>
