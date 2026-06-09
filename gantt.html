@@ -10,7 +10,7 @@
     <div class="border-b py-6 pl-10 border-gray-200 bg-white">
       <div class="flex items-center gap-4">
         <div
-          class="flex items-center justify-center rounded-lg bg-blue-100 text-blue-600 p-2 w-fit h-fit"
+          class="flex items-center justify-center rounded-lg bg-brand-super-light text-brand p-2 w-fit h-fit"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -71,7 +71,7 @@
           </div>
         </div>
         <div
-          class="flex gap-1 items-center bg-brand-light text-brand font-semibold px-4 py-2 rounded-md cursor-pointer border-none hover:bg-brand-border transition-colors mt-8"
+          class="flex gap-1 items-center bg-brand text-white font-semibold px-4 py-2 rounded-md cursor-pointer border-none hover:bg-brand-hover transition-colors mt-8"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -88,7 +88,9 @@
             <path d="M5 12h14" />
             <path d="M12 5v14" />
           </svg>
-          <button id="addTaskBtn" onclick="addTask()">Ajouter tâche</button>
+          <button id="addTaskBtn" onclick="addTask()" class="cursor-pointer">
+            Ajouter une tâche
+          </button>
         </div>
       </div>
 
@@ -99,7 +101,7 @@
           <button
             id="carouselPrev"
             onclick="carouselMove(-1)"
-            class="hidden absolute left-0 z-10 -translate-x-1/2 w-9 h-9 rounded-full bg-red-800 shadow-md border flex items-center justify-center hover:bg-gray-50 disabled:opacity-30"
+            class="absolute left-0 z-10 -translate-x-1/2 w-9 h-9 text-brand rounded-full bg-brand-super-light shadow-md flex items-center justify-center hover:bg-brand-border disabled:opacity-30"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -127,7 +129,7 @@
           <button
             id="carouselNext"
             onclick="carouselMove(1)"
-            class="hidden absolute right-0 z-10 translate-x-1/2 w-9 h-9 rounded-full bg-red-800 shadow-md border flex items-center justify-center hover:bg-gray-50 disabled:opacity-30"
+            class="absolute right-0 z-10 translate-x-1/2 w-9 h-9 rounded-full bg-brand-super-light shadow-md text-brand flex items-center justify-center hover:bg-brand-border disabled:opacity-30"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -151,53 +153,6 @@
         </p>
       </div>
 
-      <!-- <div class="bg-white border border-gray-300 rounded-lg p-6">
-        <h3 class="text-lg font-semibold text-brand mb-2">Tableau complet</h3>
-        <div class="overflow-x-auto my-4">
-          <table id="result" class="border-collapse w-full min-w-150">
-            <thead>
-              <tr>
-                <th
-                  class="border border-gray-300 px-3 py-2 text-center bg-gray-100"
-                >
-                  Tâche
-                </th>
-                <th
-                  class="border border-gray-300 px-3 py-2 text-center bg-gray-100"
-                >
-                  Durée
-                </th>
-                <th
-                  class="border border-gray-300 px-3 py-2 text-center bg-gray-100"
-                >
-                  Début
-                </th>
-                <th
-                  class="border border-gray-300 px-3 py-2 text-center bg-gray-100"
-                >
-                  Fin
-                </th>
-                <th
-                  class="border border-gray-300 px-3 py-2 text-center bg-gray-100"
-                >
-                  Tâches Successeurs
-                </th>
-                <th
-                  class="border border-gray-300 px-3 py-2 text-center bg-gray-100"
-                >
-                  MT
-                </th>
-                <th
-                  class="border border-gray-300 px-3 py-2 text-center bg-gray-100"
-                >
-                  ML
-                </th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </div> -->
       <div class="bg-white border border-gray-300 rounded-lg p-6">
         <h3 class="text-lg font-semibold text-brand mb-2">Tableau complet</h3>
         <div class="overflow-x-auto my-4">
@@ -206,8 +161,10 @@
               <tr>
                 <th>Tâche</th>
                 <th>Durée</th>
-                <th>Début</th>
-                <th>Fin</th>
+                <th>Début tôt</th>
+                <th>Fin tôt</th>
+                <th>Début tard</th>
+                <th>Fin tard</th>
                 <th>Tâches Successeurs</th>
                 <th>MT</th>
                 <th>ML</th>
@@ -227,13 +184,13 @@
         <div class="flex gap-3 flex-wrap mb-4">
           <button
             onclick="generateGantt()"
-            class="bg-brand text-white text-sm font-semibold px-4 py-2 rounded cursor-pointer border-none hover:bg-[#7a1221] transition-colors"
+            class="bg-brand text-white font-semibold px-4 py-2 rounded-md cursor-pointer border-none hover:bg-[#6b0a17] transition-colors"
           >
             Générer le diagramme
           </button>
           <button
             onclick="resetData()"
-            class="bg-gray-200 text-gray-700 text-sm font-semibold px-4 py-2 rounded cursor-pointer border-none hover:bg-gray-300 transition-colors"
+            class="bg-gray-200 text-gray-700 font-semibold px-4 py-2 rounded-md cursor-pointer border-none hover:bg-gray-300 transition-colors"
           >
             Réinitialiser
           </button>
@@ -251,7 +208,7 @@
               type="checkbox"
               id="showLate"
               onchange="drawGantt()"
-              class="accent-[#1565c0] w-4 h-4 cursor-pointer"
+              class="gantt-check gantt-check-late cursor-pointer"
             />
             <span>Dates au plus tard</span>
           </label>
@@ -262,7 +219,7 @@
               type="checkbox"
               id="showFree"
               onchange="drawGantt()"
-              class="accent-[#ffc107] w-4 h-4 cursor-pointer"
+              class="gantt-check gantt-check-free cursor-pointer"
             />
             <span>Marges libres</span>
           </label>
@@ -273,7 +230,7 @@
               type="checkbox"
               id="showCritical"
               onchange="drawGantt()"
-              class="accent-[#ff4444] w-4 h-4 cursor-pointer"
+              class="gantt-check gantt-check-critical cursor-pointer"
             />
             <span>Chemin critique</span>
           </label>

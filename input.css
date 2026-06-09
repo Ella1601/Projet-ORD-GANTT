@@ -1,14 +1,19 @@
 @import "tailwindcss";
-@source "gantt.html";
+/* @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"); */
+@source ".";
 
 @theme {
-  --color-brand: #9e182b;
-  --color-brand-light: #f2afbc;
-  --color-brand-border: #e698a4;
+  --color-brand: #8a0d1e;
+  --color-brand-hover: #c53e50;
+  --color-brand-light: #f59fbd;
+  --color-brand-super-light: #fdc6d9;
+  --color-brand-border: #f36d8f;
   --color-text-default: #1f1f1f;
-  --color-focus-outline: #f2afbc;
+  --color-focus-outline: #f59fbd;
   --color-later-date: #f1ae00;
   --color-earlier-date: #69adfa;
   --color-critical-task: #f7554d;
   --color-marge-libre: #94aa64;
+
+  /* --font-sans: "Poppins", ui-sans-serif, system-ui, sans-serif; */
 }
